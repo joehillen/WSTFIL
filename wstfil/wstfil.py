@@ -3,15 +3,15 @@ import ply.lex as lex
 class WST:
     def __init__(self,lang):
         self.lang = lang
+        rules = __import__("rules."+self.lang,globals(),locals(),["c"],-1)
+        self.lexer = lex.lex(module=rules,debug=1)
 
     def translate(self,data):
-        lexer = self.build_lexer()
+        self.lexer.input(data)
         while True:
-            tok = lexer.token()
+            tok = self.lexer.token()
+            print tok
             if not tok: break
             print tok
             
         
-    def build_lexer(self):
-        __import__("wstfil.rules."+self.lang)
-        return lex.lex()

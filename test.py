@@ -10,23 +10,22 @@ def test():
             m = re.match(r'.*\.(\w+)\.wst',fn)
             lang = m.group(1)
             print "Testing:", lang
-            output = ""
+            o = ""
+            i = f.read()
+            wst = WST(lang)
             try:
-                input = f.read()
-                wst = WST(lang)
-                output = wst.translate(input)
+                o = wst.translate(i)
             except Exception, e:
                 print "ERROR:",e
             finally:
-                if input == output:
+                if i == o:
                     print ".",
                 else:
                     print fn,"failed!"
                     expected = open(fn.rstrip('.wst'),'r')
-                    output.split("\n")
-                    for n in range(len(output)):
-                        line = expected.readline()
-                        print output[n], "    |    ", line
+                    print o
+                    print '==========='
+                    print expected.read()
                 
 if __name__ == "__main__":
     test()
