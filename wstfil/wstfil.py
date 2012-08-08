@@ -13,6 +13,5 @@ class WST:
             
         
     def build_lexer(self):
-        if self.lang == "c":
-            from rules import c
+        __import__("wstfil.rules."+self.lang)
         return lex.lex()
