@@ -1,4 +1,4 @@
-from wstfil.wstfil import WST
+from wstfil.wstfil import translate
 
 from glob import glob
 import re
@@ -12,20 +12,20 @@ def test():
             print "Testing:", lang
             o = ""
             i = f.read()
-            wst = WST(lang)
             try:
-                o = wst.translate(i)
+                o = translate(lang,i)
             except Exception, e:
                 print "ERROR:",e
             finally:
-                if i == o:
+                ef = open(fn.rstrip('.wst'),'r')
+                expected = ef.read()
+                if expected == o:
                     print ".",
                 else:
                     print fn,"failed!"
-                    expected = open(fn.rstrip('.wst'),'r')
                     print o
                     print '==========='
-                    print expected.read()
+                    print expected
                 
 if __name__ == "__main__":
     test()
