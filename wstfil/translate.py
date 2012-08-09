@@ -6,7 +6,6 @@ def translate(lang,data):
     lexer.input(data)
     while True:
         tok = lexer.token()
-        print tok
         if not tok: break
         print tok
             

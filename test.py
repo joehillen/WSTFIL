@@ -1,4 +1,4 @@
-from wstfil.wstfil import translate
+from wstfil.translate import translate
 
 from glob import glob
 import re
