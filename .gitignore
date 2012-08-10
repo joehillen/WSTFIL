@@ -1,5 +1,9 @@
 *.py[co]
 
+# PLY
+parsetab.py
+parser.out
+
 # Packages
 *.egg
 *.egg-info
