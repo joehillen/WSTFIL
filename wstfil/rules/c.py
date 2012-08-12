@@ -23,14 +23,15 @@ def p_exps_end(p):
     p[0] = [p[1]]
 
 def p_exp(p):
-    '''exp : echo
-           | block
-           | line
+    '''
+    exp : echo
+        | block
+        | line
     '''
     p[0] = p[1]
 
 def p_block(p):
-    '''block : line indented '''
+    'block : line indented '
     p[0] = ('block',p[1],p[2])
 
 def p_indented(p):
@@ -38,11 +39,8 @@ def p_indented(p):
     p[0] = p[1] + [p[3]]
 
 def p_indented_last(p):
-    '''indented : INDENT exp'''
+    'indented : INDENT exp'
     p[0] = [p[2]]
-
-def p_indented_null(p):
-    'indented : '
 
 def p_echo_macro(p):
     'echo : MACRO NL'

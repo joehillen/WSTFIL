@@ -1,5 +1,6 @@
 import ply.lex as lex
 import ply.yacc as yacc
+from pprint import pprint
 
 def generate(tree):
     result = ""
@@ -27,6 +28,8 @@ def translate(lang,data):
         print tok
     parser = rules.parser
     tree = parser.parse(data,debug=True)
+    print "tree"
+    pprint(tree)
     return generate(tree)
 
             
