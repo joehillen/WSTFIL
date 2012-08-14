@@ -4,15 +4,42 @@ tokens = (
     'INDENT',
     'STUFF',
     'MACRO',
+    'BLOCK',
+    'ENDBLOCK',
     'NL'
 )
 
-from wstfil.rules.lex.newline import t_NL
-from wstfil.rules.lex.indent import t_INDENT
 from wstfil.rules.lex.base import t_error,t_ignore
 
-t_STUFF = r'[^\#\ \n\t]+[^\n]*'
-t_MACRO = r'\#\w+[^\n]+'
+def t_NL(t):
+    r'\n+'
+    t.lexer.lineno += t.value.count('\n')
+    t.lexer.cur_ind = 0
+    return t
+
+def t_INDENT(t):
+    r'\ \ \ \ '
+    if t.lexer.prev_ind <= 0 and t.lexer.cur_ind <= 0:
+        t.lexer.prev_ind = 1
+        t.lexer.cur_ind  = 1
+        t.type = 'BLOCK'
+        return t
+    t.lexer.cur_ind += 1
+    if t.lexer.prev_ind < t.lexer.cur_ind:
+        t.lexer.prev_ind = t.lexer.cur_ind
+        t.type = 'BLOCK'
+        return t
+
+
+def t_STUFF(t):
+    r'[^\#\ \n\t]+[^\n]*'
+    if t.lexer.prev_ind > 0 and t.lexer.prev_ind > t.lexer.cur_ind:
+        t.lexer.prev_ind = t.lexer.cur_ind
+        t.type = 'ENDBLOCK'
+    return t    
+
+def t_MACRO(t):
+    r'\#\w+[^\n]+'
 
 def p_exps(p):
     'exps : exps exp'

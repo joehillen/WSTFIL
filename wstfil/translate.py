@@ -21,7 +21,10 @@ def generate(tree):
 def translate(lang,data):
     rules = __import__("rules."+lang,globals(),locals(),[lang],-1)
     lexer = lex.lex(module=rules,debug=1)
+    lexer.prev_ind = 0
+    lexer.cur_ind = 0
     lexer.input(data)
+    print 'TOKENS:'
     while True:
         tok = lexer.token()
         if not tok: break
