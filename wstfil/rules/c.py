@@ -1,4 +1,6 @@
 import ply.yacc as yacc
+import ply.lex as lex
+from copy import copy
 
 tokens = (
     'INDENT',
@@ -32,14 +34,18 @@ def t_INDENT(t):
         t.type = 'BLOCK'
         return t
 
-
 def t_STUFF(t):
     r'[^\#\ \n\t]+[^\n]*'
     if t.lexer.prev_ind > 0 and t.lexer.prev_ind > t.lexer.cur_ind:
+        dedent = t.lexer.prev_ind - t.lexer.cur_ind
         t.lexer.prev_ind = t.lexer.cur_ind
-        t.lexer.block_count -= 1
+        t.lexer.block_count -= dedent
         t.type = 'ENDBLOCK'
-    return t    
+        tok = copy(t)
+        tok.type = 'ENDBLOCK'
+        tok.value = None
+        t.lexer.prepend = [tok for _ in range(1,dedent)]
+    return t
 
 t_MACRO = r'[ \t]*\#\w+[^\n]+'
 

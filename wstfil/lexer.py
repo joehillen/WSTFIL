@@ -7,9 +7,12 @@ class WSTLexer(object):
         self.lexer.prev_ind = 0
         self.lexer.cur_ind = 0
         self.lexer.block_count = 0
+        self.lexer.prepend = []
 
     def input(self, data):
         return self.lexer.input(data)
 
     def token(self):
-        return self.lexer.token()
+        tok = self.lexer.token()
+        self.lexer.prepend += [tok]
+        return self.lexer.prepend.pop(0)

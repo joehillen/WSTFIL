@@ -2,6 +2,7 @@ from wstfil.translate import translate
 
 from glob import glob
 import re
+import traceback
 
 def test():
     for fn in glob('tests/*/*.wst'):
@@ -15,7 +16,8 @@ def test():
             try:
                 o = translate(lang,i)
             except Exception, e:
-                print "ERROR:",e
+                print "ERROR in test:",e
+                print traceback.format_exc()
             finally:
                 ef = open(fn.rstrip('.wst'),'r')
                 expected = ef.read()
