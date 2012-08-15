@@ -22,6 +22,7 @@ def t_INDENT(t):
     if t.lexer.prev_ind <= 0 and t.lexer.cur_ind <= 0:
         t.lexer.prev_ind = 1
         t.lexer.cur_ind  = 1
+        t.lexer.block_count += 1
         t.type = 'BLOCK'
         return t
     t.lexer.cur_ind += 1
@@ -35,6 +36,7 @@ def t_STUFF(t):
     r'[^\#\ \n\t]+[^\n]*'
     if t.lexer.prev_ind > 0 and t.lexer.prev_ind > t.lexer.cur_ind:
         t.lexer.prev_ind = t.lexer.cur_ind
+        t.lexer.block_count -= 1
         t.type = 'ENDBLOCK'
     return t    
 

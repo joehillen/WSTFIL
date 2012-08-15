@@ -20,7 +20,7 @@ def generate(tree):
 
 def translate(lang,data):
     rules = __import__("rules."+lang,globals(),locals(),[lang],-1)
-    lexer = lex.lex(module=rules,debug=1)
+    lexer = lex.lex(module=rules,debug=True)
     lexer.prev_ind = 0
     lexer.cur_ind = 0
     lexer.input(data)
@@ -31,7 +31,7 @@ def translate(lang,data):
         print tok
     parser = rules.parser
     tree = parser.parse(data,debug=True)
-    print "tree"
+    print "Tree:"
     pprint(tree)
     return generate(tree)
 
