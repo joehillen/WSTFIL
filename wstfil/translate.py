@@ -2,6 +2,8 @@ import ply.lex as lex
 import ply.yacc as yacc
 from pprint import pprint
 
+from lexer import WSTLexer
+
 def generate(tree):
     result = ""
     for l in tree:
@@ -20,9 +22,7 @@ def generate(tree):
 
 def translate(lang,data):
     rules = __import__("rules."+lang,globals(),locals(),[lang],-1)
-    lexer = lex.lex(module=rules,debug=True)
-    lexer.prev_ind = 0
-    lexer.cur_ind = 0
+    lexer = WSTLexer(module=rules,debug=True)
     lexer.input(data)
     print 'TOKENS:'
     while True:
