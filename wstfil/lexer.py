@@ -14,5 +14,22 @@ class WSTLexer(object):
 
     def token(self):
         tok = self.lexer.token()
-        self.lexer.prepend += [tok]
-        return self.lexer.prepend.pop(0)
+
+        if tok is None and self.lexer.block_count > 0:
+            """
+            if end of input with open blocks remaining,
+            close the remaining blocks
+            """
+            tok = lex.LexToken()
+            tok.type = 'ENDBLOCK'
+            tok.value = None
+            tok.lineno = self.lexer.lineno
+            tok.lexpos = self.lexer.lexpos
+            self.lexer.prepend += [tok]*self.lexer.block_count
+            self.lexer.block_count = 0
+        else:
+            self.lexer.prepend.append(tok)
+
+        if len(self.lexer.prepend) > 0:
+            return self.lexer.prepend.pop(0)
+        return None

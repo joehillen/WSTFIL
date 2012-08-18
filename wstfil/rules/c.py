@@ -14,7 +14,7 @@ tokens = (
 from wstfil.rules.lex.base import t_error,t_ignore
 
 def t_NL(t):
-    r'\n+(?:[ \t]*\n+)*'
+    r'\n+(?:[ \t]*\n)*'
     t.lexer.lineno += t.value.count('\n')
     t.lexer.cur_ind = 0
     return t
@@ -40,11 +40,10 @@ def t_STUFF(t):
         dedent = t.lexer.prev_ind - t.lexer.cur_ind
         t.lexer.prev_ind = t.lexer.cur_ind
         t.lexer.block_count -= dedent
-        t.type = 'ENDBLOCK'
         tok = copy(t)
         tok.type = 'ENDBLOCK'
         tok.value = None
-        t.lexer.prepend = [tok for _ in range(1,dedent)]
+        t.lexer.prepend += [tok]*dedent
     return t
 
 t_MACRO = r'[ \t]*\#\w+[^\n]+'
@@ -66,8 +65,8 @@ def p_exp(p):
     p[0] = p[1]
 
 def p_block(p):
-    'block : BLOCK exps ENDBLOCK'
-    p[0] = ('block',p[1],p[2])
+    'block : STUFF NL BLOCK exps ENDBLOCK'
+    p[0] = ('block',p[1],p[2],p[4])
 
 
 def p_echo_macro(p):
