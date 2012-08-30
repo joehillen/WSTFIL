@@ -9,20 +9,24 @@ def generate(tree):
     result = ""
     for l in tree:
         t = l[0] # t is for type
-        if t == "echo":
-            result += l[1]
+        if t == "echo" or t == "blank":
+            result += l[1] + "\n"
         elif t == "line":
-            result += l[1] + ";" + l[2]
+            result += l[1] + ";\n"
         elif t == "block":
             start = l[1]
-            nl = l[2]
-            inner = l[3]
-            result += start + " {" + nl
+            inner = l[2]
+            result += start + "\n{\n"
             innertext = generate(inner)
-            for line in innertext.split('\n'):
-                if len(line.rstrip())>0:
-                    result += "    " + line.rstrip() + '\n'
-            result += "}\n"
+            lines = innertext.split('\n')
+            for line in lines[:-1]:
+                result += "    " + line.rstrip() + '\n'
+            last = lines[-1]
+            if len(last.strip()) > 0:
+                result += "    " + last.rstrip() + "\n"
+                result += "}\n"
+            else:
+                result += "}\n"
     return result
 
 def translate(lang,data):
