@@ -1,6 +1,7 @@
 #include <stdio.h>
 
-int fib(int n) {
+int fib(int n)
+{
     int a;
     int b;
 
@@ -16,7 +17,8 @@ int fib(int n) {
     }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
     int n;
     int result;
 
