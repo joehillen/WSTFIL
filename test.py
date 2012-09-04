@@ -3,6 +3,9 @@ from wstfil.translate import translate
 from glob import glob
 import re
 import traceback
+import tempfile
+import os
+import subprocess
 
 def test():
     for fn in glob('tests/*/*.wst'):
@@ -15,22 +18,32 @@ def test():
             i = f.read()
             try:
                 o = translate(lang,i)
+                # tf := temp file
+                tf,temp = tempfile.mkstemp(suffix=".c",text=True)
+                if o is not None:
+                    os.write(tf, o)
+                os.close(tf)
             except Exception, e:
                 print "ERROR in test:",e
                 print traceback.format_exc()
             finally:
-                ef = open(fn.rstrip('.wst'),'r')
-                expected = ef.read()
+                expected = fn.rstrip('.wst')
+                diff = \
+                    subprocess.Popen(
+                        "diff -y " + expected + " " + temp,
+                        stdout=subprocess.PIPE,
+                        shell=True) 
+                failed = diff.wait()
                 print '='*80
-                if expected == o:
+                if not failed:
                     print fn, "passed!"
                 else:
-                    print fn,"failed!"
-                    print o
-                    print '-------------'
-                    print expected
+                    for line in diff.stdout:
+                        print line,
                 print '='*80
                 print
+
+                os.remove(temp)
                 
 if __name__ == "__main__":
     test()

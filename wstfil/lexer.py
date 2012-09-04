@@ -8,6 +8,7 @@ class WSTLexer(object):
         self.lexer.cur_ind = 0
         self.lexer.block_count = 0
         self.lexer.prepend = []
+        self.lexer.blanks = []
 
     def input(self, data):
         return self.lexer.input(data)
@@ -25,7 +26,9 @@ class WSTLexer(object):
             tok.value = None
             tok.lineno = self.lexer.lineno
             tok.lexpos = self.lexer.lexpos
-            self.lexer.prepend += [tok]*self.lexer.block_count
+            self.lexer.prepend.extend([tok]*self.lexer.block_count)
+            self.lexer.prepend.extend(self.lexer.blanks)
+            self.lexer.blanks = []
             self.lexer.block_count = 0
         else:
             self.lexer.prepend.append(tok)

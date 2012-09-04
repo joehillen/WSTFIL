@@ -4,11 +4,11 @@ int fib(int n)
 {
     int a;
     int b;
-
-    if (n == 0) || (n == 1) 
+    
+    if (n == 0) || (n == 1)
     {
         return n;
-    } 
+    }
     else 
     {
         a = fib(n);
@@ -21,13 +21,13 @@ int main(int argc, char *argv[])
 {
     int n;
     int result;
-
-    if (argc > 1) 
+    
+    if (argc > 1)
     {
         puts("Too many arguments");
         return 1;
-    } 
-    else 
+    }
+    else
     {
         n = atoi(argv[1]);
         result = fib(n);

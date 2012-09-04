@@ -7,9 +7,11 @@ from lexer import WSTLexer
 
 def generate(tree):
     result = ""
+    if tree is None:
+        return None
     for l in tree:
         t = l[0] # t is for type
-        if t == "echo" or t == "blank":
+        if t == "echo":
             result += l[1] + "\n"
         elif t == "line":
             result += l[1] + ";\n"
@@ -20,10 +22,10 @@ def generate(tree):
             innertext = generate(inner)
             lines = innertext.split('\n')
             for line in lines[:-1]:
-                result += "    " + line.rstrip() + '\n'
+                result += "    " + line + '\n'
             last = lines[-1]
             if len(last.strip()) > 0:
-                result += "    " + last.rstrip() + "\n"
+                result += "    " + last + "\n"
                 result += "}\n"
             else:
                 result += "}\n"

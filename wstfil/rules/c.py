@@ -17,7 +17,7 @@ def t_NL(t):
     r'[ \t]*\n'
     t.lexer.lineno += t.value.count('\n')
     t.lexer.cur_ind = 0
-    return t
+    t.lexer.blanks.append(t)
 
 def t_INDENT(t):
     r'\ \ \ \ '
@@ -43,7 +43,10 @@ def t_STUFF(t):
         tok = copy(t)
         tok.type = 'ENDBLOCK'
         tok.value = None
-        t.lexer.prepend += [tok]*dedent
+        t.lexer.prepend.extend([tok]*dedent)
+
+    t.lexer.prepend.extend(t.lexer.blanks)
+    t.lexer.blanks = []
     return t
 
 t_MACRO = r'[ \t]*\#\w+[^\n]+'
@@ -54,7 +57,10 @@ precedence = (('left','BLOCK'),
 
 def p_exps(p):
     'exps : exps exp'
-    p[0] = p[1] + p[2]
+    if p[2]:
+        p[0] = p[1] + p[2]
+    else:
+        p[0] = p[1]
 
 def p_exps_end(p):
     'exps : exp'
@@ -69,28 +75,24 @@ def p_exp(p):
     '''
     p[0] = p[1]
 
-def p_block_blank(p):
-    'block : STUFF NL BLOCK exps nl ENDBLOCK'
-    p[0] = [('block', p[1], p[4])] + p[5]
-
 def p_block(p):
-    'block : STUFF NL BLOCK exps ENDBLOCK'
+    'block : STUFF BLOCK NL exps ENDBLOCK'
     p[0] = [('block', p[1], p[4])]
 
 def p_echo_macro(p):
-    'echo : MACRO NL'
+    'echo : MACRO'
     p[0] = [('echo', p[1])]
 
 def p_line(p):
-    'line : STUFF NL'
+    'line : STUFF'
     p[0] = [('line', p[1])]
 
 def p_nl(p):
     'nl : nl NL'
-    p[0] = [('blank', p[2].translate(None,'\n'))]
+    p[0] = [('echo', p[2].translate(None,'\n'))]
 
 def p_nl_end(p):
     'nl : NL'
-    p[0] = [('blank', p[1].translate(None,'\n'))]
+    #p[0] = [('echo', p[1].translate(None,'\n'))]
 
 parser = yacc.yacc()
