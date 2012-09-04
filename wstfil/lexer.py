@@ -13,6 +13,10 @@ class WSTLexer(object):
     def input(self, data):
         return self.lexer.input(data)
 
+    def collect_blanks(self):
+        self.lexer.prepend.extend(self.lexer.blanks)
+        self.lexer.blanks = []
+
     def token(self):
         tok = self.lexer.token()
 
@@ -27,9 +31,10 @@ class WSTLexer(object):
             tok.lineno = self.lexer.lineno
             tok.lexpos = self.lexer.lexpos
             self.lexer.prepend.extend([tok]*self.lexer.block_count)
-            self.lexer.prepend.extend(self.lexer.blanks)
-            self.lexer.blanks = []
+            self.collect_blanks()
             self.lexer.block_count = 0
+        elif tok is None:
+            self.collect_blanks()
         else:
             self.lexer.prepend.append(tok)
 

@@ -23,10 +23,7 @@ def test():
                 if o is not None:
                     os.write(tf, o)
                 os.close(tf)
-            except Exception, e:
-                print "ERROR in test:",e
-                print traceback.format_exc()
-            finally:
+
                 expected = fn.rstrip('.wst')
                 diff = \
                     subprocess.Popen(
@@ -44,6 +41,9 @@ def test():
                 print
 
                 os.remove(temp)
+            except Exception, e:
+                print "ERROR in test:",e
+                print traceback.format_exc()
                 
 if __name__ == "__main__":
     test()
